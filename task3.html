@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="WeatherApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .weather-container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .weather-icon {
+            width: 100px;
+            height: 100px;
+            margin: 20px auto;
+        }
+
+        .weather-info {
+            margin-bottom: 20px;
+        }
+
+        .weather-info p {
+            margin: 5px 0;
+        }
+
+        .weather-input {
+            margin-top: 20px;
+        }
+
+        .weather-input input {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-right: 10px;
+        }
+
+        .weather-input button {
+            padding: 8px 15px;
+            border-radius: 5px;
+            border: none;
+            background-color: #4CAF50;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .weather-input button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="weather-container" ng-controller="WeatherController">
+        <h2>Real-Time Weather App</h2>
+        <div class="weather-info" ng-if="weatherData">
+            <img class="weather-icon" ng-src="{{ weatherData.weather[0].icon | weatherIconUrl }}" alt="Weather Icon">
+            <p>{{ weatherData.weather[0].description }}</p>
+            <p>Temperature: {{ weatherData.main.temp }}°C</p>
+            <p>Humidity: {{ weatherData.main.humidity }}%</p>
+            <p>Wind Speed: {{ weatherData.wind.speed }} m/s</p>
+        </div>
+        <div class="weather-input">
+            <input type="text" ng-model="city" placeholder="Enter city name">
+            <button ng-click="getWeather()">Get Weather</button>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script>
+        angular.module('WeatherApp', [])
+            .controller('WeatherController', function ($scope, $http) {
+                $scope.city = "";
+                $scope.weatherData = null;
+
+                $scope.getWeather = function () {
+                    $http.get('https://api.openweathermap.org/data/2.5/weather', {
+                        params: {
+                            q: $scope.city,
+                            appid: 'YOUR_OPENWEATHERMAP_API_KEY',
+                            units: 'metric'
+                        }
+                    })
+                    .then(function (response) {
+                        $scope.weatherData = response.data;
+                    })
+                    .catch(function (error) {
+                        console.error('Error fetching weather data:', error);
+                    });
+                };
+
+                // Function to generate weather icon URL
+                $scope.weatherIconUrl = function (iconCode) {
+                    return 'http://openweathermap.org/img/wn/' + iconCode + '.png';
+                };
+            });
+    </script>
+</body>
+</html>
