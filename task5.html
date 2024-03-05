@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="AuthApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Authentication</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .auth-container {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .auth-form {
+            margin-bottom: 20px;
+        }
+
+        .auth-form input {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .auth-form button {
+            padding: 8px 15px;
+            border-radius: 5px;
+            border: none;
+            background-color: #4CAF50;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .auth-form button:hover {
+            background-color: #45a049;
+        }
+
+        .auth-message {
+            color: #ff6347;
+            font-size: 14px;
+        }
+
+        .auth-link {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        .auth-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container" ng-controller="AuthController">
+        <h2>User Authentication</h2>
+        <div ng-show="showLoginForm" class="auth-form">
+            <h3>Login</h3>
+            <form ng-submit="login()">
+                <input type="text" ng-model="loginData.username" placeholder="Username" required><br>
+                <input type="password" ng-model="loginData.password" placeholder="Password" required><br>
+                <button type="submit">Login</button>
+            </form>
+            <p class="auth-message">{{ loginError }}</p>
+            <p>Don't have an account? <a href="#" class="auth-link" ng-click="showSignupForm()">Sign Up</a></p>
+        </div>
+        <div ng-show="showSignup" class="auth-form">
+            <h3>Sign Up</h3>
+            <form ng-submit="signup()">
+                <input type="text" ng-model="signupData.username" placeholder="Username" required><br>
+                <input type="email" ng-model="signupData.email" placeholder="Email" required><br>
+                <input type="password" ng-model="signupData.password" placeholder="Password" required><br>
+                <button type="submit">Sign Up</button>
+            </form>
+            <p class="auth-message">{{ signupError }}</p>
+            <p>Already have an account? <a href="#" class="auth-link" ng-click="showLoginForm()">Login</a></p>
+        </div>
+        <div ng-show="loggedIn">
+            <h3>Welcome, {{ username }}!</h3>
+            <p>This is personalized content.</p>
+            <button ng-click="logout()">Logout</button>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script>
+        angular.module('AuthApp', [])
+            .controller('AuthController', function ($scope) {
+                $scope.loggedIn = false;
+                $scope.showLoginForm = true;
+                $scope.showSignup = false;
+                $scope.username = '';
+                $scope.loginData = {
+                    username: '',
+                    password: ''
+                };
+                $scope.signupData = {
+                    username: '',
+                    email: '',
+                    password: ''
+                };
+                $scope.login = function () {
+                    // Implement login logic here
+                    if ($scope.loginData.username === 'user' && $scope.loginData.password === 'password') {
+                        $scope.loggedIn = true;
+                        $scope.username = $scope.loginData.username;
+                        $scope.loginError = '';
+                    } else {
+                        $scope.loginError = 'Invalid username or password';
+                    }
+                };
+                $scope.signup = function () {
+                    // Implement signup logic here
+                    $scope.loggedIn = true;
+                    $scope.username = $scope.signupData.username;
+                };
+                $scope.logout = function () {
+                    $scope.loggedIn = false;
+                    $scope.username = '';
+                    $scope.loginData.username = '';
+                    $scope.loginData.password = '';
+                    $scope.signupData.username = '';
+                    $scope.signupData.email = '';
+                    $scope.signupData.password = '';
+                    $scope.showLoginForm = true;
+                    $scope.showSignup = false;
+                };
+                $scope.showSignupForm = function () {
+                    $scope.showLoginForm = false;
+                    $scope.showSignup = true;
+                };
+                $scope.showLoginForm = function () {
+                    $scope.showLoginForm = true;
+                    $scope.showSignup = false;
+                };
+            });
+    </script>
+</body>
+</html>
+
