@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="TaskManagerApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .task-manager {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 300px;
+        }
+
+        .task-manager h2 {
+            margin-top: 0;
+        }
+
+        .task-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .task-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+
+        .task-list li:last-child {
+            border-bottom: none;
+        }
+
+        .task-list li span {
+            flex-grow: 1;
+        }
+
+        .task-list li button {
+            background-color: #ff6347;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .task-list li button:hover {
+            background-color: #ff4736;
+        }
+
+        .add-task-form {
+            margin-top: 20px;
+        }
+
+        .add-task-form input[type="text"] {
+            width: calc(100% - 80px);
+            padding: 8px;
+            border-radius: 3px;
+            border: 1px solid #ddd;
+            margin-right: 10px;
+        }
+
+        .add-task-form button {
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            padding: 8px 15px;
+            cursor: pointer;
+        }
+
+        .add-task-form button:hover {
+            background-color: #45a049;
+        }
+
+        .edit-task-input {
+            width: calc(100% - 80px);
+            padding: 8px;
+            border-radius: 3px;
+            border: 1px solid #ddd;
+            margin-right: 10px;
+        }
+
+        .edit-task-button {
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .edit-task-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="task-manager" ng-controller="TaskController">
+        <h2>Employee work Time Task</h2>
+        <ul class="task-list">
+            <li ng-repeat="task in tasks">
+                <span ng-hide="task.editing">{{ task.name }}</span>
+                <input ng-model="task.name" ng-show="task.editing" class="edit-task-input"/>
+                <button ng-click="editTask(task)">{{ task.editing ? 'Save' : 'Edit' }}</button>
+                <button ng-click="deleteTask($index)">Delete</button>
+            </li>
+        </ul>
+        <form class="add-task-form" ng-submit="addTask()">
+            <input type="text" ng-model="newTask" placeholder="Enter a new task">
+            <button type="submit">Add Task</button>
+        </form>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script>
+        angular.module('TaskManagerApp', [])
+            .controller('TaskController', function ($scope) {
+                $scope.tasks = [];
+
+                $scope.addTask = function () {
+                    if ($scope.newTask.trim() !== '') {
+                        $scope.tasks.push({ name: $scope.newTask.trim(), editing: false });
+                        $scope.newTask = '';
+                    }
+                };
+
+                $scope.deleteTask = function (index) {
+                    $scope.tasks.splice(index, 1);
+                };
+
+                $scope.editTask = function (task) {
+                    task.editing = !task.editing;
+                };
+            });
+    </script>
+</body>
+</html>
