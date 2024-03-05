@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="QuizApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Quiz App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .quiz-container {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .question {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .options {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .option {
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .option:hover {
+            background-color: #e0e0e0;
+        }
+
+        .score {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container" ng-controller="QuizController">
+        <h1>Interactive Quiz App</h1>
+        <div ng-show="!quizCompleted">
+            <div class="question">{{ currentQuestion.question }}</div>
+            <div class="options">
+                <div class="option" ng-repeat="option in currentQuestion.options" ng-click="selectOption(option)">
+                    {{ option }}
+                </div>
+            </div>
+            <div class="score" ng-show="showScore">Score: {{ score }}</div>
+        </div>
+        <div ng-show="quizCompleted">
+            <h2>Quiz Completed!</h2>
+            <div class="score">Final Score: {{ score }}</div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script>
+        angular.module('QuizApp', [])
+            .controller('QuizController', function ($scope) {
+                $scope.questions = [
+                    {
+                        question: 'What is the capital of France?',
+                        options: ['Paris', 'London', 'Berlin', 'Rome'],
+                        answer: 'Paris'
+                    },
+                    {
+                        question: 'Which planet is known as the Red Planet?',
+                        options: ['Earth', 'Jupiter', 'Mars', 'Venus'],
+                        answer: 'Mars'
+                    },
+                    {
+                        question: 'What is the powerhouse of the cell?',
+                        options: ['Nucleus', 'Mitochondria', 'Ribosome', 'Endoplasmic Reticulum'],
+                        answer: 'Mitochondria'
+                    }
+                ];
+
+                $scope.currentIndex = 0;
+                $scope.score = 0;
+                $scope.showScore = false;
+                $scope.quizCompleted = false;
+
+                $scope.currentQuestion = $scope.questions[$scope.currentIndex];
+
+                $scope.selectOption = function (selectedOption) {
+                    if (selectedOption === $scope.currentQuestion.answer) {
+                        $scope.score++;
+                    }
+
+                    if ($scope.currentIndex < $scope.questions.length - 1) {
+                        $scope.currentIndex++;
+                        $scope.currentQuestion = $scope.questions[$scope.currentIndex];
+                    } else {
+                        $scope.showScore = true;
+                        $scope.quizCompleted = true;
+                    }
+                };
+            });
+    </script>
+</body>
+</html>
